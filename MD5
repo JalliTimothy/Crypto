@@ -1,0 +1,33 @@
+import hashlib
+import hmac
+
+def compute_md5(message: bytes) -> str:
+    return hashlib.md5(message).hexdigest()
+
+def sign_hmac_md5(key: bytes, message: bytes) -> bytes:
+    return hmac.new(key, message, hashlib.md5).digest()
+
+def verify_hmac_md5(key: bytes, message: bytes, signature: bytes) -> bool:
+    expected = hmac.new(key, message, hashlib.md5).digest()
+    return hmac.compare_digest(expected, signature)
+
+def demo():
+    secret_key = b"supersecretkey123"
+    message = b"Lab Task 4: Authenticate signature using MD5 (HMAC version)"
+    print("Message:", message.decode())
+    md5_hex = compute_md5(message)
+    print("MD5 digest (hex):", md5_hex)
+    signature = sign_hmac_md5(secret_key, message)
+    print("HMAC-MD5 signature (hex):", signature.hex())
+    ok = verify_hmac_md5(secret_key, message, signature)
+    print("Verification (original):", "VALID" if ok else "INVALID")
+    tampered = b"Lab Task 4: Authenticate signature using MD5 (tampered)"
+    ok2 = verify_hmac_md5(secret_key, tampered, signature)
+    print("Verification (tampered message):", "VALID" if ok2 else "INVALID")
+    bad_sig = bytearray(signature)
+    bad_sig[0] ^= 0x01
+    ok3 = verify_hmac_md5(secret_key, message, bytes(bad_sig))
+    print("Verification (tampered signature):", "VALID" if ok3 else "INVALID")
+
+if __name__ == "__main__":
+    demo()
