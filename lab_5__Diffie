@@ -1,0 +1,25 @@
+P = int(input("Enter a prime number (P): "))
+G = int(input("Enter a primitive root modulo P (G): "))
+a = int(input("Enter Alice's private key (a): "))
+b = int(input("Enter Bob's private key (b): "))
+
+A = (G ** a) % P
+B = (G ** b) % P
+
+print("\nPublic Values:")
+print("P =", P)
+print("G =", G)
+
+print("\nAlice's Public Key:", A)
+print("Bob's Public Key:", B)
+
+key1 = (B ** a) % P
+key2 = (A ** b) % P
+
+print("\nAlice's Shared Key:", key1)
+print("Bob's Shared Key:", key2)
+
+if key1 == key2:
+    print("\nKey Exchange Successful! Shared Key =", key1)
+else:
+    print("\nKey Exchange Failed!")
